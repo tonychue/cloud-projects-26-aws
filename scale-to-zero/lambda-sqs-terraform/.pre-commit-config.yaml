@@ -1,0 +1,60 @@
+# .pre-commit-config.yaml
+# Local developer quality, security and IaC checks
+
+repos:
+
+  # ------------------------------------------------------------
+  # Generic Git / file checks
+  # ------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  # ------------------------------------------------------------
+  # Terraform formatting and validation
+  # ------------------------------------------------------------
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.105.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+
+  # ------------------------------------------------------------
+  # Terraform security scanning
+  # ------------------------------------------------------------
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: 3.2.499
+    hooks:
+      - id: checkov
+        name: Checkov Terraform Security Scan
+        args:
+          - --directory
+          - iac
+          - --framework
+          - terraform
+
+  # ------------------------------------------------------------
+  # Secret detection
+  # ------------------------------------------------------------
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
+    hooks:
+      - id: gitleaks
+
+  # ------------------------------------------------------------
+  # Python linting / formatting
+  # ------------------------------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.10
+    hooks:
+      - id: ruff-check
+        args:
+          - --fix
+      - id: ruff-format
