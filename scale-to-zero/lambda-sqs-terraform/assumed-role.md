@@ -16,7 +16,7 @@ Bob
 example-role
  │
  │ Trust Policy:
- │ arn:aws:iam::545910165528:root
+ │ arn:aws:iam::1010101010101:root
  │
  ▼
 Temporary Credentials
@@ -29,11 +29,11 @@ assumed_role
 
 | Item            | Value                                         |
 | --------------- | --------------------------------------------- |
-| AWS Account     | `545910165528`                                |
+| AWS Account     | `1010101010101`                                |
 | IAM User        | `Bob`                                         |
 | Source Profile  | `example_profile`                             |
 | IAM Role        | `example-role`                                |
-| Role ARN        | `arn:aws:iam::545910165528:role/example-role` |
+| Role ARN        | `arn:aws:iam::1010101010101:role/example-role` |
 | Target Profile  | `assumed_role`                                |
 | Default Session | `3600` seconds / 1 hour                       |
 
@@ -94,15 +94,15 @@ Expected:
 
 ```json
 {
-    "Account": "545910165528",
-    "Arn": "arn:aws:iam::545910165528:user/Bob"
+    "Account": "1010101010101",
+    "Arn": "arn:aws:iam::1010101010101:user/Bob"
 }
 ```
 
 The important value is:
 
 ```text
-arn:aws:iam::545910165528:user/Bob
+arn:aws:iam::1010101010101:user/Bob
 ```
 
 If this returns `tfuser`, the wrong credentials are configured in `example_profile`.
@@ -129,7 +129,7 @@ with:
       "Sid": "AllowAssumeExampleRole",
       "Effect": "Allow",
       "Action": "sts:AssumeRole",
-      "Resource": "arn:aws:iam::545910165528:role/example-role"
+      "Resource": "arn:aws:iam::1010101010101:role/example-role"
     }
   ]
 }
@@ -159,7 +159,7 @@ aws iam list-user-policies \
 `example-role` trusts the AWS account root:
 
 ```text
-arn:aws:iam::545910165528:root
+arn:aws:iam::1010101010101:root
 ```
 
 Create:
@@ -178,7 +178,7 @@ with:
       "Sid": "TrustAccountRoot",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::545910165528:root"
+        "AWS": "arn:aws:iam::1010101010101:root"
       },
       "Action": "sts:AssumeRole"
     }
@@ -214,7 +214,7 @@ The trust policy should contain:
 ```json
 {
   "Principal": {
-    "AWS": "arn:aws:iam::545910165528:root"
+    "AWS": "arn:aws:iam::1010101010101:root"
   }
 }
 ```
@@ -236,7 +236,7 @@ sts:AssumeRole
 against:
 
 ```text
-arn:aws:iam::545910165528:role/example-role
+arn:aws:iam::1010101010101:role/example-role
 ```
 
 ### Role trust policy
@@ -244,7 +244,7 @@ arn:aws:iam::545910165528:role/example-role
 The role must trust:
 
 ```text
-arn:aws:iam::545910165528:root
+arn:aws:iam::1010101010101:root
 ```
 
 Therefore:
@@ -260,7 +260,7 @@ example-role
  │ Trust Policy
  │ Principal = Account Root
  ▼
-545910165528
+1010101010101
 ```
 
 The root principal in the trust policy delegates trust to the account. It does not mean that only the AWS account root user can assume the role.
@@ -273,7 +273,7 @@ Before using the script, test:
 
 ```bash
 aws sts assume-role \
-  --role-arn "arn:aws:iam::545910165528:role/example-role" \
+  --role-arn "arn:aws:iam::1010101010101:role/example-role" \
   --role-session-name AWSCLI-Session \
   --profile example_profile
 ```
@@ -289,7 +289,7 @@ If successful, AWS returns temporary credentials:
     "Expiration": "..."
   },
   "AssumedRoleUser": {
-    "Arn": "arn:aws:sts::545910165528:assumed-role/example-role/AWSCLI-Session"
+    "Arn": "arn:aws:sts::1010101010101:assumed-role/example-role/AWSCLI-Session"
   }
 }
 ```
@@ -320,7 +320,7 @@ Example:
 
 ```bash
 ./assume-role.sh \
-  "arn:aws:iam::545910165528:role/example-role" \
+  "arn:aws:iam::1010101010101:role/example-role" \
   example_profile \
   assumed_role \
   3600
@@ -357,8 +357,8 @@ Expected:
 
 ```json
 {
-    "Account": "545910165528",
-    "Arn": "arn:aws:sts::545910165528:assumed-role/example-role/AWSCLI-Session"
+    "Account": "1010101010101",
+    "Arn": "arn:aws:sts::1010101010101:assumed-role/example-role/AWSCLI-Session"
 }
 ```
 
@@ -469,14 +469,14 @@ aws sts get-caller-identity --profile example_profile
 Expected:
 
 ```text
-arn:aws:iam::545910165528:user/Bob
+arn:aws:iam::1010101010101:user/Bob
 ```
 
 ### Step 2 — Assume the role
 
 ```bash
 ./assume-role.sh \
-  "arn:aws:iam::545910165528:role/example-role" \
+  "arn:aws:iam::1010101010101:role/example-role" \
   example_profile \
   assumed_role \
   3600
@@ -491,7 +491,7 @@ aws sts get-caller-identity --profile assumed_role
 Expected:
 
 ```text
-arn:aws:sts::545910165528:assumed-role/example-role/AWSCLI-Session
+arn:aws:sts::1010101010101:assumed-role/example-role/AWSCLI-Session
 ```
 
 ### Step 4 — Use AWS
@@ -515,7 +515,7 @@ aws sts get-caller-identity --profile example_profile
 If you see:
 
 ```text
-arn:aws:iam::545910165528:user/tfuser
+arn:aws:iam::1010101010101:user/tfuser
 ```
 
 then `example_profile` is using the wrong credentials.
@@ -547,7 +547,7 @@ sts:AssumeRole
 on:
 
 ```text
-arn:aws:iam::545910165528:role/example-role
+arn:aws:iam::1010101010101:role/example-role
 ```
 
 ---
@@ -567,7 +567,7 @@ aws iam get-role \
 The role should trust:
 
 ```text
-arn:aws:iam::545910165528:root
+arn:aws:iam::1010101010101:root
 ```
 
 ---
@@ -609,7 +609,7 @@ When they expire, run the AssumeRole script again to obtain a new session.
 
 ```text
                      AWS Account
-                    545910165528
+                    1010101010101
                           │
              ┌────────────┴────────────┐
              │                         │
@@ -622,7 +622,7 @@ When they expire, run the AssumeRole script again to obtain a new session.
              └────────────────────────►│
                                        │
                          Trusts account root:
-                         arn:aws:iam::545910165528:root
+                         arn:aws:iam::1010101010101:root
                                        │
                                        ▼
                               Temporary Credentials
