@@ -2,9 +2,9 @@
 # Local developer quality, security and IaC checks
 
 
-exclude: |
-  ^bootstrap/
-  ^scale-to-zero/aws-landing-zone/bootstrap/
+# exclude: |
+#   ^bootstrap/
+#   ^scale-to-zero/aws-landing-zone/bootstrap/
 
 fail_fast: false
 repos:
