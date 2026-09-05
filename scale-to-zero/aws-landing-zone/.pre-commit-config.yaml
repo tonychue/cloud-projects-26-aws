@@ -33,7 +33,7 @@ repos:
         exclude: ^scale-to-zero/aws-landing-zone/bootstrap/
       # - id: terraform_checkov
       #   exclude: ^scale-to-zero/aws-landing-zone/bootstrap/
-      # - id: terraform_validate
+      - id: terraform_validate
 
   # ------------------------------------------------------------
   # Terraform security scanning
