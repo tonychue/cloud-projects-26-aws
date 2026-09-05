@@ -107,7 +107,7 @@ UserBob
     }
 
  ./assume-role.sh "arn:aws:iam::545910165528:role/example-role" example_profile   assumed_role   3600
-
+./assume-role.sh "arn:aws:iam::545910165528:role/example-role" terraform  assumed_role   3600
 
  install tfenv -
  git clone --depth=1 https://github.com/tfutils/tfenv.git ~/.tfenv
@@ -117,3 +117,54 @@ UserBob
 touch .pre-commit-config.yaml
 pre-commit install
  pre-commit run --all-files
+
+
+S3_State_Lock_Policy Attached to the tfuser in order to allow terraform apply
+
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "TerraformStateBucket",
+			"Effect": "Allow",
+			"Action": [
+				"s3:ListBucket"
+			],
+			"Resource": "arn:aws:s3:::terraform-state-bkend-01"
+		},
+		{
+			"Sid": "TerraformStateObjects",
+			"Effect": "Allow",
+			"Action": [
+				"s3:GetObject",
+				"s3:PutObject",
+				"s3:DeleteObject"
+			],
+			"Resource": [
+				"arn:aws:s3:::terraform-state-bkend-01/lambda-sqs-terraform/terraform.tfstate",
+				"arn:aws:s3:::terraform-state-bkend-01/lambda-sqs-terraform/terraform.tfstate.tflock"
+			]
+		}
+	]
+}
+
+
+terraform-docs
+
+curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v0.24.0/terraform-docs-v0.24.0-$(uname)-amd64.tar.gz
+tar -xzf terraform-docs.tar.gz
+chmod +x terraform-docs
+mv terraform-docs /usr/local/bin/terraform-docs
+
+
+terraform-docs completion bash > ~/.terraform-docs-completion
+source ~/.terraform-docs-completion
+
+# or the one-liner below
+
+source <(terraform-docs completion bash)
+
+
+terraform -chdir=iac/networking init
+terraform -chdir=iac/networking plan
+terraform -chdir=iac/networking apply

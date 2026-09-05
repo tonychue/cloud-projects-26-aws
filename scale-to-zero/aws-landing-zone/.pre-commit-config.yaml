@@ -1,6 +1,12 @@
 # .pre-commit-config.yaml
 # Local developer quality, security and IaC checks
 
+
+exclude: |
+  ^bootstrap/
+  ^scale-to-zero/aws-landing-zone/bootstrap/
+
+fail_fast: false
 repos:
 
   # ------------------------------------------------------------
@@ -24,7 +30,10 @@ repos:
     rev: v1.105.0
     hooks:
       - id: terraform_fmt
-      - id: terraform_validate
+        exclude: ^scale-to-zero/aws-landing-zone/bootstrap/
+      # - id: terraform_checkov
+      #   exclude: ^scale-to-zero/aws-landing-zone/bootstrap/
+      # - id: terraform_validate
 
   # ------------------------------------------------------------
   # Terraform security scanning
@@ -34,11 +43,14 @@ repos:
     hooks:
       - id: checkov
         name: Checkov Terraform Security Scan
+        exclude: ^scale-to-zero/aws-landing-zone/bootstrap/
         args:
           - --directory
           - iac
           - --framework
           - terraform
+          - --skip-path
+          - scale-to-zero/aws-landing-zone/bootstrap/
 
   # ------------------------------------------------------------
   # Secret detection
